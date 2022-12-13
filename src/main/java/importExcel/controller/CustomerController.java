@@ -5,10 +5,7 @@ import importExcel.message.ResponseMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import importExcel.service.ExcelService;
 
@@ -37,5 +34,12 @@ public class CustomerController {
 
         message = "Please upload an excel file!";
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseMessage(message));
+    }
+    @DeleteMapping(value = "/delete")
+    public ResponseEntity<Void> deleteByKeyUUID(@RequestParam("keyUUID") String keyUUID) {
+        fileService.deleteByKeyUUID(keyUUID);
+
+        return new ResponseEntity<Void>( HttpStatus.OK);
+
     }
 }

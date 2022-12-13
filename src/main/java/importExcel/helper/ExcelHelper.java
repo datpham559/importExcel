@@ -1,28 +1,24 @@
 package importExcel.helper;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
+import importExcel.entity.Customer;
+import org.apache.poi.ss.usermodel.*;
+import org.springframework.web.multipart.MultipartFile;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import importExcel.entity.Customer;
-import org.apache.poi.ss.usermodel.*;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.springframework.web.multipart.MultipartFile;
-
-
 
 public class ExcelHelper {
     public static String TYPE1 = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
     public static String TYPE2 = "application/vnd.ms-excel";
-    static String[] HEADERs = { "Mã khách hàng", "Tên khách hàng", "Nhóm KH, NCC", "Mã số thuế","Điện thoại","Ngừng theo dõi" };
+    static String[] HEADERs = {"Mã khách hàng", "Tên khách hàng", "Nhóm KH, NCC", "Mã số thuế", "Điện thoại", "Ngừng theo dõi"};
 
     public static boolean hasExcelFormat(MultipartFile file) {
 
-        if (TYPE1.equals(file.getContentType())||TYPE2.equals(file.getContentType())) {
+        if (TYPE1.equals(file.getContentType()) || TYPE2.equals(file.getContentType())) {
             return true;
         }
         return false;
@@ -33,9 +29,16 @@ public class ExcelHelper {
             Workbook workbook = WorkbookFactory.create(is);
             Sheet sheet = workbook.getSheetAt(0);
 
-            Iterator<Row> rows = sheet.iterator();
+            if(sheet.getRow(sheet.getLastRowNum()).getCell(0).getStringCellValue().contains("Số dòng")){
+                sheet.removeRow(sheet.getRow(sheet.getLastRowNum()));
+            }
+//            Row rowDelete = sheet.getRow(sheet.getLastRowNum());
+//
+//            sheet.removeRow(rowDelete);
 
+            Iterator<Row> rows = sheet.iterator();
             List<Customer> customers = new ArrayList<>();
+
 
             int rowNumber = 0;
             while (rows.hasNext()) {

@@ -1,41 +1,48 @@
 package importExcel.entity;
 
-import com.sun.istack.NotNull;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 
 @Entity
-@Table(name="customers")
+@Table(name = "customers")
+@EntityListeners(AuditingEntityListener.class)
 public class Customer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    @NotNull
-    @Column(name="customerCode")
+
+    @Column(name = "customerCode")
     private String customerCode;
-    @NotNull
-    @Column(name="customerName")
+    @Column(name = "customerName")
     private String customerName;
 
-    @Column(name="address")
+    @Column(name = "address")
     private String address;
 
-    @Column(name="customerGroup")
+    @Column(name = "customerGroup")
     private String customerGroup;
 
-    @Column(name="tax")
+    @Column(name = "tax")
     private String tax;
 
-    @Column(name="phoneNumber")
+    @Column(name = "phoneNumber")
     private String phoneNumber;
 
-    @Column(name="unfollow")
+    @Column(name = "unfollow")
     private boolean unfollow;
+
+    @Column(name = "createdDate")
+    private LocalDate createdDate;
+    @Column(name = "keyUUID")
+    private String keyUUID;
 
     public Customer() {
     }
 
-    public Customer(Integer id, String customerCode, String customerName, String address, String customerGroup, String tax, String phoneNumber, boolean unfollow) {
+    public Customer(Integer id, String customerCode, String customerName, String address, String customerGroup, String tax, String phoneNumber, boolean unfollow, LocalDate createdDate, String keyUUID) {
         this.id = id;
         this.customerCode = customerCode;
         this.customerName = customerName;
@@ -44,6 +51,8 @@ public class Customer {
         this.tax = tax;
         this.phoneNumber = phoneNumber;
         this.unfollow = unfollow;
+        this.createdDate = createdDate;
+        this.keyUUID = keyUUID;
     }
 
     public Integer getId() {
@@ -108,5 +117,21 @@ public class Customer {
 
     public void setUnfollow(boolean unfollow) {
         this.unfollow = unfollow;
+    }
+
+    public LocalDate getCreatedDate() {
+        return createdDate;
+    }
+
+    public void setCreatedDate(LocalDate createdDate) {
+        this.createdDate = createdDate;
+    }
+
+    public String getKey() {
+        return keyUUID;
+    }
+
+    public void setKey(String keyUUID) {
+        this.keyUUID = keyUUID;
     }
 }
