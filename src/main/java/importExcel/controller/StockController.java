@@ -2,27 +2,24 @@ package importExcel.controller;
 
 import importExcel.helper.ExcelHelper;
 import importExcel.message.ResponseMessage;
+import importExcel.service.ExcelService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import importExcel.service.ExcelService;
 
 @RestController
-@RequestMapping(value = "/api/excel")
-public class CustomerController {
-
+@RequestMapping("/api/excel/stock")
+public class StockController {
     @Autowired
-    ExcelService fileService;
-
+    private ExcelService excelService;
     @PostMapping("/upload")
-    public ResponseEntity<ResponseMessage> uploadFile(@RequestParam("file") MultipartFile file) {
+    public ResponseEntity<ResponseMessage> uploadStock(@RequestParam("file") MultipartFile file) {
         String message = "";
-
         if (ExcelHelper.hasExcelFormat(file)) {
             try {
-                fileService.save(file);
+                excelService.saveStock(file);
                 message = "Uploaded the file successfully: " + file.getOriginalFilename();
                 return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage(message));
             } catch (Exception e) {
@@ -34,13 +31,10 @@ public class CustomerController {
         message = "Please upload an excel file!";
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseMessage(message));
     }
-
-    @DeleteMapping(value = "/delete")
+    @DeleteMapping("/delete")
     public ResponseEntity<Void> deleteByKeyUUID(@RequestParam("keyUUID") String keyUUID) {
-        fileService.deleteByKeyUUID(keyUUID);
+        excelService.deleteByKeyUUIDStock(keyUUID);
         return new ResponseEntity<Void>(HttpStatus.OK);
 
     }
-
-
 }
