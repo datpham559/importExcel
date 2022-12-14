@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
@@ -17,12 +18,12 @@ public class ExcelService {
     @Autowired
     private CustomerRepository customerRepository;
 
-    public void save(MultipartFile file){
+    public void save(MultipartFile file) {
         try {
             List<Customer> customers = ExcelHelper.excelToCustomers(file.getInputStream());
             String key = UUID.randomUUID().toString();
             LocalDate date = LocalDate.now();
-            for (Customer customer : customers){
+            for (Customer customer : customers) {
                 customer.setCreatedDate(date);
                 customer.setKey(key);
             }
@@ -31,8 +32,22 @@ public class ExcelService {
             throw new RuntimeException("fail to store excel data: " + e.getMessage());
         }
     }
-    public void deleteByKeyUUID(String keyUUID){
+
+    public void deleteByKeyUUID(String keyUUID) {
         customerRepository.deleteByKeyUUID(keyUUID);
     }
 
+    public List<Customer> getCustomers() {
+        return customerRepository.findAll();
+    }
+
+    public List<Customer> getCustomersByKeyUUID(String keyUUID) {
+        return customerRepository.getCustomersByKeyUUID(keyUUID);
+    }
+
+    public ByteArrayInputStream exportExcel() {
+        List<Customer> customers = customerRepository.findAll();
+        ByteArrayInputStream inputStream = ExcelHelper.customersToExcel(customers);
+        return inputStream;
+    }
 }
