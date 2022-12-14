@@ -124,7 +124,12 @@ public class BaseEntity {
     @Column(name = "recordStatus")
     private String recordStatus;
 
-    public BaseEntity(Integer id, String voucherType, String voucherNo, LocalDate voucherDate, LocalDate accountingDate, String invoiceNo, String invoiceDate, String debitAccount, String creditAccount, String currencyType, Long currency, String materialGoodCode, String materialGoodName, String storageIn, String storageOut, String caculationUnit, Long amount, Long price, Float tranferRate, Long moneyTranfer, String fixedAssetsType, String fixedAssetsCode, String toolsCode, String debitObject, String creditObject, String unit, String employee, String bankAccount, String itemCost, String construction, String costSet, String purchaseOrder, String buyOrder, String purchaseContract, String saleContract, String statsCode, String explanation, String explanationDetail, String recordStatus) {
+    @Column(name = "createdDate")
+    private LocalDate createdDate;
+    @Column(name = "keyUUID")
+    private String keyUUID;
+
+    public BaseEntity(Integer id, String voucherType, String voucherNo, LocalDate voucherDate, LocalDate accountingDate, String invoiceNo, String invoiceDate, String debitAccount, String creditAccount, String currencyType, Long currency, String materialGoodCode, String materialGoodName, String storageIn, String storageOut, String caculationUnit, Long amount, Long price, Float tranferRate, Long moneyTranfer, String fixedAssetsType, String fixedAssetsCode, String toolsCode, String debitObject, String creditObject, String unit, String employee, String bankAccount, String itemCost, String construction, String costSet, String purchaseOrder, String buyOrder, String purchaseContract, String saleContract, String statsCode, String explanation, String explanationDetail, String recordStatus,LocalDate createdDate, String keyUUID) {
         this.id = id;
         this.voucherType = voucherType;
         this.voucherNo = voucherNo;
@@ -164,6 +169,8 @@ public class BaseEntity {
         this.explanation = explanation;
         this.explanationDetail = explanationDetail;
         this.recordStatus = recordStatus;
+        this.createdDate = createdDate;
+        this.keyUUID = keyUUID;
     }
 
     public BaseEntity() {
@@ -479,5 +486,21 @@ public class BaseEntity {
 
     public void setRecordStatus(String recordStatus) {
         this.recordStatus = recordStatus;
+    }
+
+    public LocalDate getCreatedDate() {
+        return createdDate;
+    }
+
+    public void setCreatedDate(LocalDate createdDate) {
+        this.createdDate = createdDate;
+    }
+
+    public String getKeyUUID() {
+        return keyUUID;
+    }
+
+    public void setKeyUUID(String keyUUID) {
+        this.keyUUID = keyUUID;
     }
 }

@@ -75,4 +75,25 @@ public class CustomerController {
                 .body(file);
 
     }
+
+    @PostMapping("/import")
+    public ResponseEntity<ResponseMessage> importExcel(@RequestParam("file") MultipartFile file) {
+        String message = "";
+
+        if (ExcelHelper.hasExcelFormat(file)) {
+            try {
+                fileService.saveToTable(file);
+
+                message = "Uploaded the file successfully: " + file.getOriginalFilename();
+                return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage(message));
+            } catch (Exception e) {
+                message = "Could not upload the file: " + file.getOriginalFilename() + "!";
+                return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(new ResponseMessage(message));
+            }
+        }
+
+        message = "Please upload an excel file!";
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseMessage(message));
+    }
+
 }

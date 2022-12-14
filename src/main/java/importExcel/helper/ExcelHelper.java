@@ -1,6 +1,7 @@
 package importExcel.helper;
 
-import importExcel.entity.Customer;
+import importExcel.dto.DataToTable;
+import importExcel.entity.*;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.web.multipart.MultipartFile;
@@ -9,9 +10,11 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.UUID;
 
 import static importExcel.helper.ScaleConfig.scales;
 
@@ -38,9 +41,6 @@ public class ExcelHelper {
             if (sheet.getRow(sheet.getLastRowNum()).getCell(0).getStringCellValue().contains("Số dòng")) {
                 sheet.removeRow(sheet.getRow(sheet.getLastRowNum()));
             }
-//            Row rowDelete = sheet.getRow(sheet.getLastRowNum());
-//
-//            sheet.removeRow(rowDelete);
 
             Iterator<Row> rows = sheet.iterator();
             List<Customer> customers = new ArrayList<>();
@@ -68,15 +68,12 @@ public class ExcelHelper {
                         case 0:
                             customer.setCustomerCode(currentCell.getStringCellValue());
                             break;
-
                         case 1:
                             customer.setCustomerName(currentCell.getStringCellValue());
                             break;
-
                         case 2:
                             customer.setAddress(currentCell.getStringCellValue());
                             break;
-
                         case 3:
                             customer.setCustomerGroup(currentCell.getStringCellValue());
                             break;
@@ -108,6 +105,104 @@ public class ExcelHelper {
         }
     }
 
+    public static DataToTable excelToTable(InputStream is) {
+        try {
+            DataToTable dataToTable = new DataToTable();
+            Workbook workbook = WorkbookFactory.create(is);
+            Sheet sheet = workbook.getSheetAt(0);
+
+            Iterator<Row> rows = sheet.iterator();
+            List<Accreditative> accreditatives = new ArrayList<>();
+            List<DepositCollection> depositCollections = new ArrayList<>();
+            List<PaySlip> paySlips = new ArrayList<>();
+            List<Receipt> receipts = new ArrayList<>();
+
+
+            int rowNumber = 0;
+            while (rows.hasNext()) {
+                Row currentRow = rows.next();
+
+                // skip header
+                if (rowNumber == 0) {
+                    rowNumber++;
+                    continue;
+                }
+
+//                Accreditative accreditative = new Accreditative();
+//                DepositCollection depositCollection = new DepositCollection();
+//                PaySlip paySlip = new PaySlip();
+//                Receipt receipt = new Receipt();
+                Cell cell1 = currentRow.getCell(1);
+                if (cell1.getStringCellValue().equals("Ủy nhiệm chi")) {
+                    accreditatives.add(setValue(currentRow));
+                }
+                if(cell1.getStringCellValue().equals("Phiếu thu")){
+                    receipts.add(setValueReceipt(currentRow));
+                }
+
+            }
+            workbook.close();
+            if (accreditatives.size() > 0) {
+                dataToTable.setAccreditatives(accreditatives);
+            }
+            if (receipts.size() > 0) {
+                dataToTable.setReceipts(receipts);
+            }
+
+            return dataToTable;
+        } catch (IOException e) {
+            throw new RuntimeException("fail to parse Excel file: " + e.getMessage());
+        }
+    }
+
+    public static Accreditative setValue(Row currentRow) {
+        Accreditative accreditative = new Accreditative();
+
+        Iterator<Cell> cellsInRow = currentRow.iterator();
+        int cellIdx = 0;
+        while (cellsInRow.hasNext()) {
+            Cell currentCell = cellsInRow.next();
+
+            switch (cellIdx) {
+                case 0:
+                  continue;
+                case 1:
+                    accreditative.setVoucherType(currentCell.getStringCellValue());
+                    break;
+                case 2:
+                    accreditative.setVoucherNo(currentCell.getStringCellValue());
+                    break;
+                default:
+                    break;
+            }
+            cellIdx++;
+        }
+        return accreditative;
+    }
+    public static Receipt setValueReceipt(Row currentRow) {
+        Receipt receipt = new Receipt();
+
+        Iterator<Cell> cellsInRow = currentRow.iterator();
+        int cellIdx = 0;
+        while (cellsInRow.hasNext()) {
+            Cell currentCell = cellsInRow.next();
+
+            switch (cellIdx) {
+                case 0:
+                    continue;
+                case 1:
+                    receipt.setVoucherType(currentCell.getStringCellValue());
+                    break;
+                case 2:
+                    receipt.setVoucherNo(currentCell.getStringCellValue());
+                    break;
+                default:
+                    break;
+            }
+            cellIdx++;
+        }
+        return receipt;
+    }
     public static ByteArrayInputStream customersToExcel(List<Customer> customers) {
         try (Workbook workbook = new XSSFWorkbook(); ByteArrayOutputStream out = new ByteArrayOutputStream();) {
             Sheet sheet = workbook.createSheet(SHEET);
@@ -171,6 +266,5 @@ public class ExcelHelper {
         } catch (IOException e) {
             throw new RuntimeException("fail to import data to Excel file: " + e.getMessage());
         }
-
     }
 }
