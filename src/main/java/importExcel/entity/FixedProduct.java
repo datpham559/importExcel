@@ -42,7 +42,6 @@ public class FixedProduct {
 
     private double depriationInMonth;
 
-    private String account;
 
     private String fixedAssestsAccount;
 
@@ -57,7 +56,7 @@ public class FixedProduct {
     public FixedProduct() {
     }
 
-    public FixedProduct(Long id, String fixedProductCode, String fixedProductName, String fixedProductType, String company, LocalDate increaseDate, String accountVoucherNumber, LocalDate startDate, double usingTimeNumber, double remainTimeNumber, double price, double depriation, double depriationInSeason, double depriationAccumulate, double remainNumber, double depriationInMonth, String account, String fixedAssestsAccount, String depriationAccount, String keyUUID, LocalDate createdDate) {
+    public FixedProduct(Long id, String fixedProductCode, String fixedProductName, String fixedProductType, String company, LocalDate increaseDate, String accountVoucherNumber, LocalDate startDate, double usingTimeNumber, double remainTimeNumber, double price, double depriation, double depriationInSeason, double depriationAccumulate, double remainNumber, double depriationInMonth, String fixedAssestsAccount, String depriationAccount, String keyUUID, LocalDate createdDate) {
         this.id = id;
         this.fixedProductCode = fixedProductCode;
         this.fixedProductName = fixedProductName;
@@ -74,7 +73,6 @@ public class FixedProduct {
         this.depriationAccumulate = depriationAccumulate;
         this.remainNumber = remainNumber;
         this.depriationInMonth = depriationInMonth;
-        this.account = account;
         this.fixedAssestsAccount = fixedAssestsAccount;
         this.depriationAccount = depriationAccount;
         this.keyUUID = keyUUID;
@@ -207,14 +205,6 @@ public class FixedProduct {
 
     public void setDepriationInMonth(double depriationInMonth) {
         this.depriationInMonth = depriationInMonth;
-    }
-
-    public String getAccount() {
-        return account;
-    }
-
-    public void setAccount(String account) {
-        this.account = account;
     }
 
     public String getFixedAssestsAccount() {

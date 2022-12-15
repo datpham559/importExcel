@@ -1,13 +1,21 @@
 package importExcel.controller;
 
+import importExcel.entity.FixedProduct;
+import importExcel.entity.Inventory;
 import importExcel.helper.ExcelHelper;
 import importExcel.message.ResponseMessage;
 import importExcel.service.ExcelService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/excel/inventory")
@@ -38,4 +46,27 @@ public class InventoryController {
         return new ResponseEntity<Void>(HttpStatus.OK);
 
     }
+
+    @GetMapping(value = "/export")
+    public ResponseEntity<Resource> exportExcel() {
+        String filename = "CCDC.xlsx";
+        InputStreamResource file = new InputStreamResource(excelService.exportCCDCExcel());
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + filename)
+                .contentType(MediaType.parseMediaType("application/vnd.ms-excel"))
+                .body(file);
+    }
+
+    @GetMapping(value = "/get")
+    public ResponseEntity<List<Inventory>> getInventories() {
+        List<Inventory> inventories = excelService.getInventories();
+        return ResponseEntity.status(HttpStatus.OK).body(inventories);
+    }
+
+    @GetMapping(value = "/getInventoriesByKeyUUID")
+    public ResponseEntity<List<Inventory>> getInventoriesByKeyUUID(@RequestParam("keyUUID") String keyUUID) {
+        List<Inventory> inventories = excelService.getInventoriesByKeyUUID(keyUUID);
+        return ResponseEntity.status(HttpStatus.OK).body(inventories);
+    }
+
 }

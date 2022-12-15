@@ -1,5 +1,7 @@
 package importExcel.controller;
 
+import importExcel.entity.Payable;
+import importExcel.entity.Receivable;
 import importExcel.helper.ExcelHelper;
 import importExcel.message.ResponseMessage;
 import importExcel.service.ExcelService;
@@ -8,6 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @RestController
 @RequestMapping(value = "/api/excel/receive")
@@ -39,5 +43,17 @@ public class ReceivableController {
         System.out.println(keyUUID);
         fileService.deleteByKeyUUIDReceive(keyUUID);
         return new ResponseEntity<Void>(HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/get")
+    public ResponseEntity<List<Receivable>> getReceivables() {
+        List<Receivable> receivables = fileService.getReceivables();
+        return ResponseEntity.status(HttpStatus.OK).body(receivables);
+    }
+
+    @GetMapping(value = "/getReceiveableByKeyUUID")
+    public ResponseEntity<List<Receivable>> getReceivableByKeyUUID(@RequestParam("keyUUID") String keyUUID) {
+        List<Receivable> receivables = fileService.getReceivableByKeyUUID(keyUUID);
+        return ResponseEntity.status(HttpStatus.OK).body(receivables);
     }
 }

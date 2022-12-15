@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import javax.transaction.Transactional;
+import java.util.List;
 
 @Repository
 @Transactional
@@ -14,4 +15,7 @@ public interface StockRepository extends JpaRepository<Stock, Long> {
     @Modifying
     @Query(value = "delete from stock where keyuuid = :keyUUID",nativeQuery = true)
     void deleteByKeyUUID(String keyUUID);
+
+    @Query(value = "select * from stock where keyuuid = :keyUUID",nativeQuery = true)
+    List<Stock> getStocksByKeyUUID(String keyUUID);
 }

@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
@@ -27,7 +28,6 @@ public class ExcelService {
 
     @Autowired
     private FixedProductRepository fixedProductRepository;
-
     @Autowired
     private StockRepository stockRepository;
     public void save(MultipartFile file) {
@@ -48,6 +48,7 @@ public class ExcelService {
     public void deleteByKeyUUID(String keyUUID) {
         customerRepository.deleteByKeyUUID(keyUUID);
     }
+
 
     public void saveReceiveable(MultipartFile file) {
         try {
@@ -140,7 +141,72 @@ public class ExcelService {
         }
     }
 
-    public void deleteByKeyUUIDStock(String keyUUID){
+    public void deleteByKeyUUIDStock(String keyUUID) {
         stockRepository.deleteByKeyUUID(keyUUID);
+    }
+    public List<Customer> getCustomers() {
+        return customerRepository.findAll();
+    }
+
+    public List<Customer> getCustomersByKeyUUID(String keyUUID) {
+        return customerRepository.getCustomersByKeyUUID(keyUUID);
+    }
+
+    public ByteArrayInputStream exportExcel() {
+        List<Customer> customers = customerRepository.findAll();
+        ByteArrayInputStream inputStream = ExcelHelper.customersToExcel(customers);
+        return inputStream;
+    }
+
+    public ByteArrayInputStream exportCCDCExcel(){
+        List<Inventory> inventories = inventoryRepository.findAll();
+        ByteArrayInputStream inputStream = ExcelHelper.ccdcToExcel(inventories);
+        return inputStream;
+    }
+
+    public ByteArrayInputStream exportTSCDExcel(){
+        List<FixedProduct> fixedProducts = fixedProductRepository.findAll();
+        ByteArrayInputStream inputStream = ExcelHelper.tscdToExcel(fixedProducts);
+        return inputStream;
+    }
+
+    public List<FixedProduct> getFixProducts() {
+        return fixedProductRepository.findAll();
+    }
+
+    public List<FixedProduct> getFixProductsByKeyUUID(String keyUUID) {
+        return fixedProductRepository.getFixedProducts(keyUUID);
+    }
+
+    public List<Inventory> getInventories() {
+        return inventoryRepository.findAll();
+    }
+
+    public List<Inventory> getInventoriesByKeyUUID(String keyUUID) {
+        return inventoryRepository.getInventoriesByKeyUUID(keyUUID);
+    }
+
+    public List<Payable> getPayables() {
+        return payableRepository.findAll();
+    }
+
+    public List<Payable> getPayablesByKeyUUID(String keyUUID) {
+        return payableRepository.getPayablesByKeyUUID(keyUUID);
+    }
+
+    public List<Receivable> getReceivables() {
+        return receivableRepository.findAll();
+    }
+
+    public List<Receivable> getReceivableByKeyUUID(String keyUUID) {
+        return receivableRepository.getReceivablesByKeyUUID(keyUUID);
+    }
+
+    public List<Stock> getStocks() {
+        return stockRepository.findAll();
+    }
+
+    public List<Stock> getStocksByKeyUUID(String keyUUID) {
+        return stockRepository.getStocksByKeyUUID(keyUUID);
     }
 }

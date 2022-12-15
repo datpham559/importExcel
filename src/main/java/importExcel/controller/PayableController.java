@@ -1,5 +1,7 @@
 package importExcel.controller;
 
+import importExcel.entity.FixedProduct;
+import importExcel.entity.Payable;
 import importExcel.helper.ExcelHelper;
 import importExcel.message.ResponseMessage;
 import importExcel.service.ExcelService;
@@ -8,6 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/excel/pay")
@@ -36,6 +40,17 @@ public class PayableController {
     public ResponseEntity<Void> deleteByKeyUUID(@RequestParam("keyUUID") String keyUUID) {
         excelService.deleteByKeyUUIDPay(keyUUID);
         return new ResponseEntity<Void>(HttpStatus.OK);
+    }
 
+    @GetMapping(value = "/get")
+    public ResponseEntity<List<Payable>> getPayables() {
+        List<Payable> payables = excelService.getPayables();
+        return ResponseEntity.status(HttpStatus.OK).body(payables);
+    }
+
+    @GetMapping(value = "/getPayableByKeyUUID")
+    public ResponseEntity<List<Payable>> getPayableByKeyUUID(@RequestParam("keyUUID") String keyUUID) {
+        List<Payable> payables = excelService.getPayablesByKeyUUID(keyUUID);
+        return ResponseEntity.status(HttpStatus.OK).body(payables);
     }
 }

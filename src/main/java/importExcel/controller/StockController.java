@@ -1,5 +1,7 @@
 package importExcel.controller;
 
+import importExcel.entity.Payable;
+import importExcel.entity.Stock;
 import importExcel.helper.ExcelHelper;
 import importExcel.message.ResponseMessage;
 import importExcel.service.ExcelService;
@@ -8,6 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/excel/stock")
@@ -36,5 +40,17 @@ public class StockController {
         excelService.deleteByKeyUUIDStock(keyUUID);
         return new ResponseEntity<Void>(HttpStatus.OK);
 
+    }
+
+    @GetMapping(value = "/get")
+    public ResponseEntity<List<Stock>> getStocks() {
+        List<Stock> stocks = excelService.getStocks();
+        return ResponseEntity.status(HttpStatus.OK).body(stocks);
+    }
+
+    @GetMapping(value = "/getStocksByKeyUUID")
+    public ResponseEntity<List<Stock>> getPayableByKeyUUID(@RequestParam("keyUUID") String keyUUID) {
+        List<Stock> stocks = excelService.getStocksByKeyUUID(keyUUID);
+        return ResponseEntity.status(HttpStatus.OK).body(stocks);
     }
 }
