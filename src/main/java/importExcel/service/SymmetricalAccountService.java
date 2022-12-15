@@ -1,12 +1,15 @@
 package importExcel.service;
 
+import importExcel.entity.Supplier;
 import importExcel.entity.SymmetricalAccount;
+import importExcel.helper.SupplierExcelHelper;
 import importExcel.helper.SymmetricalAccountExcelHelper;
 import importExcel.repository.SymmetricalAccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
@@ -33,6 +36,20 @@ public class SymmetricalAccountService {
     }
     public void deleteByKeyUUID(String keyUUID){
         symmetricalAccountRepository.deleteByKeyUUID(keyUUID);
+    }
+
+    public List<SymmetricalAccount> getSymmetrical() {
+        return symmetricalAccountRepository.findAll();
+    }
+
+    public List<SymmetricalAccount> getSupplierByKeyUUID(String keyUUID) {
+        return symmetricalAccountRepository.getSymmetricalByKeyUUID(keyUUID);
+    }
+
+    public ByteArrayInputStream exportExcel() {
+        List<SymmetricalAccount> symmetricalAccounts = symmetricalAccountRepository.findAll();
+        ByteArrayInputStream inputStream = SymmetricalAccountExcelHelper.symmetricalToExcel(symmetricalAccounts);
+        return inputStream;
     }
 
 }

@@ -1,12 +1,15 @@
 package importExcel.service;
 
 import importExcel.entity.DmMerchandise;
+import importExcel.entity.Supplier;
 import importExcel.helper.DmMerchandiseExcelHelper;
+import importExcel.helper.SupplierExcelHelper;
 import importExcel.repository.DmMerchandiseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
@@ -33,6 +36,20 @@ public class DmMerchandiseService {
     }
     public void deleteByKeyUUID(String keyUUID){
         dmMerchandiseRepository.deleteByKeyUUID(keyUUID);
+    }
+
+    public List<DmMerchandise> getDmMerchandise() {
+        return dmMerchandiseRepository.findAll();
+    }
+
+    public List<DmMerchandise> getDmMerchandiseByKeyUUID(String keyUUID) {
+        return dmMerchandiseRepository.getDmMerchandiseByKeyUUID(keyUUID);
+    }
+
+    public ByteArrayInputStream exportExcel() {
+        List<DmMerchandise> dmMerchandises = dmMerchandiseRepository.findAll();
+        ByteArrayInputStream inputStream = DmMerchandiseExcelHelper.dmMerchandiseToExcel(dmMerchandises);
+        return inputStream;
     }
 
 }

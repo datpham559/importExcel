@@ -1,12 +1,15 @@
 package importExcel.service;
 
+import importExcel.entity.Customer;
 import importExcel.entity.Supplier;
+import importExcel.helper.ExcelHelper;
 import importExcel.helper.SupplierExcelHelper;
 import importExcel.repository.SupplierRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
@@ -33,6 +36,20 @@ public class SupplierService {
     }
     public void deleteByKeyUUID(String keyUUID){
         supplierRepository.deleteByKeyUUID(keyUUID);
+    }
+
+    public List<Supplier> getSupplier() {
+        return supplierRepository.findAll();
+    }
+
+    public List<Supplier> getSupplierByKeyUUID(String keyUUID) {
+        return supplierRepository.getSupplierByKeyUUID(keyUUID);
+    }
+
+    public ByteArrayInputStream exportExcel() {
+        List<Supplier> suppliers = supplierRepository.findAll();
+        ByteArrayInputStream inputStream = SupplierExcelHelper.supplierToExcel(suppliers);
+        return inputStream;
     }
 
 }

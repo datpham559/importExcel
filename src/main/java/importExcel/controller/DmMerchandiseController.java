@@ -1,13 +1,21 @@
 package importExcel.controller;
 
+import importExcel.entity.DmMerchandise;
+import importExcel.entity.Supplier;
 import importExcel.helper.DmMerchandiseExcelHelper;
 import importExcel.message.ResponseMessage;
 import importExcel.service.DmMerchandiseService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @RestController
 @RequestMapping(value = "/api/excel")
@@ -40,6 +48,32 @@ public class DmMerchandiseController {
         dmMerchandiseService.deleteByKeyUUID(keyUUID);
 
         return new ResponseEntity<Void>( HttpStatus.OK);
+
+    }
+
+    @GetMapping(value = "/get-dm-merchandise")
+    public ResponseEntity<List<DmMerchandise>> getDmMerchandise() {
+        List<DmMerchandise> dmMerchandises = dmMerchandiseService.getDmMerchandise();
+
+        return ResponseEntity.status(HttpStatus.OK).body(dmMerchandises);
+    }
+
+    @GetMapping(value = "/getDmMerchandiseByKeyUUID")
+    public ResponseEntity<List<DmMerchandise>> getSupplierByKeyUUID(@RequestParam("keyUUID") String keyUUID) {
+        List<DmMerchandise> dmMerchandises = dmMerchandiseService.getDmMerchandiseByKeyUUID(keyUUID);
+
+        return ResponseEntity.status(HttpStatus.OK).body(dmMerchandises);
+    }
+
+    @GetMapping(value = "/export-dm-merchandise")
+    public ResponseEntity<Resource> exportExcel() {
+        String filename = "VatTuHangHoa.xlsx";
+        InputStreamResource file = new InputStreamResource(dmMerchandiseService.exportExcel());
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + filename)
+                .contentType(MediaType.parseMediaType("application/vnd.ms-excel"))
+                .body(file);
 
     }
 }

@@ -1,13 +1,21 @@
 package importExcel.controller;
 
+import importExcel.entity.Supplier;
+import importExcel.entity.SymmetricalAccount;
 import importExcel.helper.SymmetricalAccountExcelHelper;
 import importExcel.message.ResponseMessage;
 import importExcel.service.SymmetricalAccountService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @RestController
 @RequestMapping(value = "/api/excel")
@@ -40,6 +48,32 @@ public class SymmetricalAccountController {
         symmetricalAccountService.deleteByKeyUUID(keyUUID);
 
         return new ResponseEntity<Void>( HttpStatus.OK);
+
+    }
+
+    @GetMapping(value = "/get-symmetrical")
+    public ResponseEntity<List<SymmetricalAccount>> getSymmetrical() {
+        List<SymmetricalAccount> symmetricalAccounts = symmetricalAccountService.getSymmetrical();
+
+        return ResponseEntity.status(HttpStatus.OK).body(symmetricalAccounts);
+    }
+
+    @GetMapping(value = "/getSymmetricalByKeyUUID")
+    public ResponseEntity<List<SymmetricalAccount>> getSymmetricalByKeyUUID(@RequestParam("keyUUID") String keyUUID) {
+        List<SymmetricalAccount> symmetricalAccounts = symmetricalAccountService.getSupplierByKeyUUID(keyUUID);
+
+        return ResponseEntity.status(HttpStatus.OK).body(symmetricalAccounts);
+    }
+
+    @GetMapping(value = "/export-symmetrical")
+    public ResponseEntity<Resource> exportExcel() {
+        String filename = "SoDuDauKy.xlsx";
+        InputStreamResource file = new InputStreamResource(symmetricalAccountService.exportExcel());
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + filename)
+                .contentType(MediaType.parseMediaType("application/vnd.ms-excel"))
+                .body(file);
 
     }
 }
